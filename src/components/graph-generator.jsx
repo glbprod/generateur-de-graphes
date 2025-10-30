@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function GraphGenerator() {
@@ -16,6 +16,22 @@ export default function GraphGenerator() {
   const [darkMode, setDarkMode] = useState(false);
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+
+  // 🌓 Sauvegarde la préférence utilisateur dans localStorage
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') setDarkMode(true);
+  }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
 
   const addDataPoint = () => {
     if (newName && newValue) {
@@ -99,10 +115,10 @@ export default function GraphGenerator() {
         return (
           <ResponsiveContainer width="100%" height={400}>
             <LineChart {...commonProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="name" stroke={darkMode ? "#d1d5db" : "#6b7280"} />
+              <YAxis stroke={darkMode ? "#d1d5db" : "#6b7280"} />
+              <Tooltip contentStyle={{ backgroundColor: darkMode ? '#1f2937' : '#fff', color: darkMode ? '#f3f4f6' : '#111827', border: '1px solid #4b5563' }} />
               <Legend />
               <Line type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={3} name="Valeur" dot={{ fill: '#3b82f6', r: 5 }} />
             </LineChart>
@@ -113,10 +129,10 @@ export default function GraphGenerator() {
         return (
           <ResponsiveContainer width="100%" height={400}>
             <BarChart {...commonProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="name" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="name" stroke={darkMode ? "#d1d5db" : "#6b7280"} />
+              <YAxis stroke={darkMode ? "#d1d5db" : "#6b7280"} />
+              <Tooltip contentStyle={{ backgroundColor: darkMode ? '#1f2937' : '#fff', color: darkMode ? '#f3f4f6' : '#111827', border: '1px solid #4b5563' }} />
               <Legend />
               <Bar dataKey="value" fill="#10b981" name="Valeur" radius={[8, 8, 0, 0]} />
             </BarChart>
@@ -135,13 +151,13 @@ export default function GraphGenerator() {
                 cy="50%"
                 outerRadius={120}
                 label={(entry) => `${entry.name}: ${entry.value}`}
-                labelLine={{ stroke: '#6b7280' }}
+                labelLine={{ stroke: darkMode ? '#d1d5db' : '#6b7280' }}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb' }} />
+              <Tooltip contentStyle={{ backgroundColor: darkMode ? '#1f2937' : '#fff', color: darkMode ? '#f3f4f6' : '#111827', border: '1px solid #4b5563' }} />
             </PieChart>
           </ResponsiveContainer>
         );
@@ -152,52 +168,47 @@ export default function GraphGenerator() {
   };
 
   return (
-  <div className={`${darkMode ? 'dark' : ''}`}>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-8 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">📊 Générateur de Graphiques</h1>
-          <p className="text-gray-600 mb-6">Créez, visualisez et exportez vos graphiques facilement !</p>
-          
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">📊 Générateur de Graphiques</h1>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            {darkMode ? '☀️ Mode clair' : '🌙 Mode sombre'}
+          </button>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 mb-6 transition-colors duration-300">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">Créez, visualisez et exportez vos graphiques facilement !</p>
+
           {/* Type Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Type de graphique</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Type de graphique</label>
             <div className="flex gap-3 flex-wrap">
-              <button
-                onClick={() => setChartType('line')}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  chartType === 'line'
-                    ? 'bg-blue-500 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                📈 Courbe
-              </button>
-              <button
-                onClick={() => setChartType('bar')}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  chartType === 'bar'
-                    ? 'bg-green-500 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                📊 Histogramme
-              </button>
-              <button
-                onClick={() => setChartType('pie')}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  chartType === 'pie'
-                    ? 'bg-purple-500 text-white shadow-lg scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                🥧 Camembert
-              </button>
+              {[
+                { type: 'line', label: '📈 Courbe', color: 'blue' },
+                { type: 'bar', label: '📊 Histogramme', color: 'green' },
+                { type: 'pie', label: '🥧 Camembert', color: 'purple' },
+              ].map(({ type, label, color }) => (
+                <button
+                  key={type}
+                  onClick={() => setChartType(type)}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                    chartType === type
+                      ? `bg-${color}-500 text-white shadow-lg scale-105`
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Chart Display */}
-          <div className="bg-gray-50 rounded-xl p-6 mb-6 border-2 border-gray-200">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-6 border-2 border-gray-200 dark:border-gray-700">
             {renderChart()}
           </div>
 
