@@ -1,5 +1,6 @@
+/** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // ou 'class' si tu veux un bouton
+  darkMode: 'class', // 👈 indispensable pour le bouton toggle
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
