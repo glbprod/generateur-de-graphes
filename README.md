@@ -13,7 +13,7 @@ Développée avec **React + Vite + TailwindCSS + Recharts**, et déployée sur *
 
 ## 🧱 Stack technique
 
-- ⚛️ **React 18** — interface réactive et modulaire  
+- ⚛️ **React 20** — interface réactive et modulaire  
 - ⚡ **Vite** — bundler ultra-rapide pour le développement  
 - 🎨 **Tailwind CSS** — design moderne et réactif  
 - 📈 **Recharts** — création de graphiques interactifs  
