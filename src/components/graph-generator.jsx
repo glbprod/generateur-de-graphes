@@ -13,6 +13,7 @@ export default function GraphGenerator() {
   const [newName, setNewName] = useState('');
   const [newValue, setNewValue] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
@@ -151,6 +152,7 @@ export default function GraphGenerator() {
   };
 
   return (
+  <div className={`${darkMode ? 'dark' : ''}`}>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
@@ -322,5 +324,6 @@ export default function GraphGenerator() {
         </div>
       </div>
     </div>
+  </div>
   );
 }
